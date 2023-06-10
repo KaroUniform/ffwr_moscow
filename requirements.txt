@@ -1,1 +1,4 @@
 aiogram==3.0.0b7
+peewee-async
+pydantic
+python-dotenv
