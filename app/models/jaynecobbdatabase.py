@@ -12,7 +12,7 @@ class BaseModel(Model):
 class Chats(BaseModel):
     anti_caps = BooleanField(constraints=[SQL("DEFAULT false")])
     anti_stickers_spam = BooleanField(constraints=[SQL("DEFAULT false")])
-    antibot = BooleanField()
+    antibot = BooleanField(constraints=[SQL("DEFAULT false")])
     antibot_text = CharField(null=True)
     chat_id = IntegerField(primary_key=True)
     chat_link = CharField(null=True)
@@ -38,7 +38,6 @@ class Roles(BaseModel):
 class Users(BaseModel):
     custom_title = CharField(null=True)
     first_join = DateTimeField()
-    role = ForeignKeyField(column_name='role_id', constraints=[SQL("DEFAULT 0")], field='role_id', model=Roles)
     user_id = IntegerField(primary_key=True)
     warn_count = SmallIntegerField()
 
@@ -58,7 +57,8 @@ class Quotes(BaseModel):
 
 class UsersToChats(BaseModel):
     chat = ForeignKeyField(column_name='chat_id', field='chat_id', model=Chats)
-    is_banned = BooleanField()
+    is_banned = BooleanField(constraints=[SQL("DEFAULT false")], null=True)
+    role = ForeignKeyField(column_name='role_id', constraints=[SQL("DEFAULT 1")], field='role_id', model=Roles)
     user = ForeignKeyField(column_name='user_id', field='user_id', model=Users)
 
     class Meta:
