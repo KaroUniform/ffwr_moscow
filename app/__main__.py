@@ -6,6 +6,8 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 from bot_config import config
 from handlers import echo
+from middleware.whitelist import WhitelistMessageMiddleware
+
 
 
 
@@ -31,6 +33,7 @@ async def main() -> None:
         token=config.bot_token.get_secret_value()
     )
     dp = Dispatcher()
+    dp.message.middleware(WhitelistMessageMiddleware())
     dp.include_routers(echo.router)
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
