@@ -1,6 +1,6 @@
 from peewee import *
 
-database = PostgresqlDatabase('jaynecobbdatabase', **{'host': '192.168.0.9', 'port': 5432, 'user': 'cobb', 'password': 'cobbpass'})
+database = PostgresqlDatabase('jaynecobbdatabase', autocommit=True, **{'host': '192.168.0.9', 'port': 5432, 'user': 'cobb', 'password': 'cobbpass'})
 
 class UnknownField(object):
     def __init__(self, *_, **__): pass
@@ -14,15 +14,16 @@ class Chats(BaseModel):
     anti_stickers_spam = BooleanField(constraints=[SQL("DEFAULT false")])
     antibot = BooleanField(constraints=[SQL("DEFAULT false")])
     antibot_text = CharField(null=True)
-    chat_id = IntegerField(primary_key=True)
+    chat_id = BigIntegerField(primary_key=True)
     chat_link = CharField(null=True)
-    chat_title = CharField()
+    chat_title = CharField(null=True)
     link_command_name = CharField(null=True)
     log_text = BooleanField(constraints=[SQL("DEFAULT true")])
     remove_voices = BooleanField(constraints=[SQL("DEFAULT false")])
     rules_text = CharField(null=True)
     welcome_set = BooleanField(constraints=[SQL("DEFAULT false")])
     welcome_text = CharField(null=True)
+    creation_time = DateTimeField()
 
     class Meta:
         table_name = 'chats'

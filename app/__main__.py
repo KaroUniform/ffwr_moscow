@@ -5,7 +5,7 @@ import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 from bot_config import config
-from handlers import echo
+from handlers import echo, chat_actions, base, role_actions
 from middleware.whitelist import WhitelistMessageMiddleware
 
 
@@ -34,7 +34,12 @@ async def main() -> None:
     )
     dp = Dispatcher()
     dp.message.middleware(WhitelistMessageMiddleware())
-    dp.include_routers(echo.router)
+    dp.include_routers(
+        echo.router,
+        chat_actions.router,
+        role_actions.router,
+        base.router # Make shure it's the last handler
+    )
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 if __name__ == "__main__":

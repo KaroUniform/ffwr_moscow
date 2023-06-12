@@ -1,5 +1,5 @@
 aiogram==3.0.0b7
-peewee-async
+peewee
 pydantic
 python-dotenv
 psycopg2-binary

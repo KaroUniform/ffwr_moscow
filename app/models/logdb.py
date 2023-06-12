@@ -1,6 +1,6 @@
 from peewee import *
 
-database = PostgresqlDatabase('logdb', **{'host': '192.168.0.9', 'port': 5432, 'user': 'cobb', 'password': 'cobbpass'})
+database = PostgresqlDatabase(database='logdb', autocommit=True, **{'host': '192.168.0.9', 'port': 5432, 'user': 'cobb', 'password': 'cobbpass'})
 
 class UnknownField(object):
     def __init__(self, *_, **__): pass
@@ -9,8 +9,8 @@ class BaseModel(Model):
     class Meta:
         database = database
 
-class Newtable(BaseModel):
-    chat_id = IntegerField()
+class Log(BaseModel):
+    chat_id = BigIntegerField()
     chat_title = CharField(null=True)
     chat_username = CharField(null=True)
     forward_date = DateTimeField(null=True)
@@ -29,13 +29,12 @@ class Newtable(BaseModel):
     message_edit_date = IntegerField(null=True)
     message_id = IntegerField()
     message_text = CharField()
-    mod_command = CharField(null=True)
     reply_to_message_from_username = CharField(null=True)
     reply_to_message_id = IntegerField(null=True)
     reply_to_message_text = CharField(null=True)
 
     class Meta:
-        table_name = 'newtable'
+        table_name = 'log'
         indexes = (
             (('chat_id', 'message_id'), True),
         )
