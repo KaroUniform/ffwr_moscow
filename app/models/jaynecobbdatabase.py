@@ -40,7 +40,6 @@ class Users(BaseModel):
     custom_title = CharField(null=True)
     first_join = DateTimeField()
     user_id = IntegerField(primary_key=True)
-    warn_count = SmallIntegerField()
 
     class Meta:
         table_name = 'users'
@@ -61,6 +60,7 @@ class UsersToChats(BaseModel):
     is_banned = BooleanField(constraints=[SQL("DEFAULT false")], null=True)
     role = ForeignKeyField(column_name='role_id', constraints=[SQL("DEFAULT 1")], field='role_id', model=Roles)
     user = ForeignKeyField(column_name='user_id', field='user_id', model=Users)
+    warn_count = SmallIntegerField()
 
     class Meta:
         table_name = 'users_to_chats'
