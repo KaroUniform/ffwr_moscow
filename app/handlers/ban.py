@@ -10,7 +10,7 @@ from bot_utils import deepgetattr
 router = Router()
 router.message.filter(F.text)
 
-@router.message((F.reply_to_message), Command('ban'), RoleFilter('moderator'))
+
 @router.message((F.reply_to_message), Command('ban'), RoleFilter('admin'))
 @router.message((F.reply_to_message), Command('ban'), RoleFilter('owner'))
 async def ban(message: Message, bot: Bot):
@@ -25,7 +25,7 @@ async def ban(message: Message, bot: Bot):
             message.reply_to_message.from_user.id
         )
         await message.reply(
-            text=f'Пользователь {first_name}{" "+last_name if last_name else ""} забанен',
+            text=f'🔨Пользователь {first_name}{" "+last_name if last_name else ""} заблокирован',
         )
         UsersToChats.update(is_banned=True).where(
             (UsersToChats.user == message.reply_to_message.from_user.id) 
@@ -34,10 +34,10 @@ async def ban(message: Message, bot: Bot):
         
     except TelegramBadRequest:
         await message.reply(
-            text=f'😢Не имею доступа к этой команде',
+            text=f'😢Не имею доступа к этой команде, не хватает прав в чате',
         )
         
-@router.message((F.reply_to_message), Command('unban'), RoleFilter('moderator'))
+
 @router.message((F.reply_to_message), Command('unban'), RoleFilter('admin'))
 @router.message((F.reply_to_message), Command('unban'), RoleFilter('owner'))
 async def unban(message: Message, bot: Bot):
@@ -51,16 +51,19 @@ async def unban(message: Message, bot: Bot):
             message.reply_to_message.from_user.id
         )
         await message.reply(
-            text=f'Пользователь {first_name}{" "+last_name if last_name else ""} разбанен',
+            text=f'❤️Пользователь {first_name}{" "+last_name if last_name else ""} разблокирован',
         )
         UsersToChats.update(is_banned=False).where(
             (UsersToChats.user == message.reply_to_message.from_user.id) 
             & (UsersToChats.chat==message.chat.id)
         ).execute()
+        
     except TelegramBadRequest:
         await message.reply(
-            text=f'😢Не имею доступа к этой команде',
+            text=f'😢Не имею доступа к этой команде, не хватает прав в чате',
         )
+        
+
         
     
     
