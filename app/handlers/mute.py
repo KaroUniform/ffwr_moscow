@@ -14,7 +14,7 @@ router.message.filter(F.text)
 @router.message((F.reply_to_message), Command('mute'), RoleFilter('owner'))
 async def mute(message: Message, bot: Bot):
     
-    full_name = deepgetattr(message, 'reply_to_message.from_user.full_name') or ""
+    full_name = deepgetattr(message, 'reply_to_message.from_user.full_name')
     until = del_command(message.text)
     if until.isdigit(): until = int(until)
     else: until = 1

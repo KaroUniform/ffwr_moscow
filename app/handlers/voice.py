@@ -1,6 +1,5 @@
 from aiogram import Router, F, Bot
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import ChatPermissions
 from aiogram.types import Message
 from filters.role import RoleFilter
 from models.jaynecobbdatabase import Chats
