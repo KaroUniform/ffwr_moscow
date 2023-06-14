@@ -1,7 +1,7 @@
 from aiogram import Router, F, Bot
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand
 from asyncio import sleep
 from filters.role import RoleFilter
 from models.jaynecobbdatabase import Chats, UsersToChats
@@ -9,15 +9,17 @@ from bot_utils import deepgetattr, del_command
 
 router = Router()
 router.message.filter(F.text)
-
+commands = [
+    BotCommand(command='/jericho', description="[reply_to_message] заблокировать пользователя во всех чатах"),
+]
 
 @router.message((F.reply_to_message), Command('jericho'), RoleFilter('owner'))
 async def jericho(message: Message, bot: Bot):
     
-    clear_text = del_command(message.text)
+    clear_text = del_command(message.text).lower()
     
-    if('yes' not in clear_text): 
-        await message.reply(text=f'👀Подтверди свое решение словом "yes" после команды')
+    if('заблокировать везде' not in clear_text): 
+        await message.reply(text=f'❗️Подтверди свое решение словом "заблокировать везде" после команды')
         return
     
     full_name = deepgetattr(message, 'reply_to_message.from_user.full_name')

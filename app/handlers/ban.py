@@ -1,14 +1,17 @@
 from aiogram import Router, F, Bot
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
-from aiogram.filters.text import Text
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand
 from filters.role import RoleFilter
 from models.jaynecobbdatabase import UsersToChats
 from bot_utils import deepgetattr
 
 router = Router()
 router.message.filter(F.text)
+commands = [
+    BotCommand(command='/ban', description="[reply_to_message] Заблокировать пользователя в чате"),
+    BotCommand(command='/unban', description="[reply_to_message] Разблокировать пользователя в чате"),
+]
 
 
 @router.message((F.reply_to_message), Command('ban'), RoleFilter('admin'))

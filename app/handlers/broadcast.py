@@ -1,13 +1,17 @@
 from aiogram import Router, F, Bot
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand
 from asyncio import sleep
 from filters.role import RoleFilter
 from models.jaynecobbdatabase import Chats
 
 router = Router()
 router.message.filter(F.text)
+
+commands = [
+    BotCommand(command='/broadcast', description="[reply_to_message] Переслать сообщение во все чаты"),
+]
 
 @router.message((F.reply_to_message), Command('broadcast'), RoleFilter('owner'))
 async def broadcast(message: Message, bot: Bot):

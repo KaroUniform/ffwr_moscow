@@ -1,12 +1,16 @@
 from aiogram import Router, F, Bot
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand
 from filters.role import RoleFilter
 from models.jaynecobbdatabase import Chats
 from aiogram.filters import Command
 
 router = Router()
 router.message.filter(F.text)
+commands = [
+    BotCommand(command='/voices', description="Вкл/выкл голосовые"),
+]
+
 
 @router.message(Command('voices'), RoleFilter('moderator'))
 @router.message(Command('voices'), RoleFilter('admin'))

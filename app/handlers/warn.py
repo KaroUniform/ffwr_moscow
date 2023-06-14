@@ -4,13 +4,18 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
 from aiogram.types import ChatPermissions
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand
 from filters.role import RoleFilter
 from models.jaynecobbdatabase import UsersToChats
 from bot_utils import deepgetattr
 
 router = Router()
 router.message.filter(F.text)
+
+commands = [
+    BotCommand(command='/warn', description="[reply_to_message] добавить предупреждение"),
+    BotCommand(command='/unwarn', description="[reply_to_message] снять предупреждение"),
+]
 
 @router.message((F.reply_to_message), Command('warn'), RoleFilter('moderator'))
 @router.message((F.reply_to_message), Command('warn'), RoleFilter('admin'))
