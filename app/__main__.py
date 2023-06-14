@@ -4,10 +4,8 @@ from logging.handlers import TimedRotatingFileHandler
 import os
 from aiogram import Bot, Dispatcher
 from bot_config import config
-from handlers import echo, chat_actions, base, ban, mute, voice, warn
+from handlers import echo, chat_actions, base, ban, mute, voice, warn, jericho
 from middleware.whitelist import WhitelistMessageMiddleware
-
-
 
 
 async def main() -> None:
@@ -17,7 +15,7 @@ async def main() -> None:
         path+'/log/Cobb.log', 
         when="midnight", 
         interval=7, 
-        backupCount=60
+        backupCount=30
     )
     logging.basicConfig(
         format="[%(asctime)s][%(levelname)s] %(message)s",
@@ -34,12 +32,13 @@ async def main() -> None:
     dp = Dispatcher()
     dp.message.middleware(WhitelistMessageMiddleware())
     dp.include_routers(
-        echo.router,
         chat_actions.router,
         ban.router,
         mute.router,
         voice.router,
         warn.router,
+        jericho.router,
+        echo.router,
         base.router # Make shure it's the last handler
     )
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
