@@ -8,9 +8,10 @@ from aiogram.types import Message
 
 class WhitelistMessageMiddleware(BaseMiddleware):
     
-    allowed_chat_cached = [chat.chat_id for chat in Chats.select(Chats.chat_id)]
+    #TODO все кеширующиеся значения перенести в settings и доставать оттуда динамично с возможностью обновления
+    allowed_chat_cached = set([chat.chat_id for chat in Chats.select(Chats.chat_id)])
     owner_role = Roles.get(Roles.name == 'owner')
-    chat_to_log = [chat.chat_id for chat in Chats.select(Chats) if chat.log_text]
+    chat_to_log = set([chat.chat_id for chat in Chats.select(Chats) if chat.log_text])
     
     async def __call__(
         self,

@@ -14,12 +14,13 @@ commands = [
     BotCommand(command='/refuse_chat', description="Удалить чат из whitelist"),
 ]
 
+# Доделать динамическое обновление
 @router.message(RoleFilter("owner"), Command("allow_chat"))
 async def allow_chat(message: Message):
     
     clear_text = del_command(message.text).lower()
     if(not clear_text): 
-        await message.answer(text='❔Добавьте команду для чата одним словом')
+        await message.answer(text='❔Добавьте никнейм для чата одним словом. Ссылку на чат можно будет получить после через /никнейм')
         return
     if(not validate_text(clear_text)):
         await message.answer(text='❌Не соответствует требованиям (английские буквы, цифры, нижние подчеркивания)')
