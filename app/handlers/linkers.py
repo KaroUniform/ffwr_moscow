@@ -22,10 +22,7 @@ commands = [
 @router.message()
 async def allow_chat(message: Message, bot : Bot):
     chat_nickname = message.text[1:]
-    
     if chat_nickname.find("@") != -1: chat_nickname = chat_nickname[:chat_nickname.find("@")]
-    
-    
     chat = Chats.get(link_command_name=chat_nickname)
     expire_date = datetime.now() + timedelta(minutes=30)
     try:
