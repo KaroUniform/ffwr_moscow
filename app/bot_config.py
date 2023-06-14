@@ -5,6 +5,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     bot_token: SecretStr
+    bot_name: str
 
     class Config:
         env_file = '.env'
