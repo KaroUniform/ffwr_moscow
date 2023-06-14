@@ -37,8 +37,10 @@ async def jericho(message: Message, bot: Bot):
             await sleep(0.1)
         except TelegramBadRequest:
             error_in_chat.append(chat.chat_title)
-        
-    await message.reply(text=f'🕯 Пользователь {full_name} заблокирован.\nудачно: {len(chats) - len(error_in_chat)};\nНеудачно: {", ".join(error_in_chat)}',)
+    
+    successful = f'🕯 Пользователь {full_name} заблокирован.'   
+    unsuccessful = f'\nНеудачно: {", ".join(error_in_chat)}' if len(error_in_chat) > 0 else ""
+    await message.reply(text=successful+unsuccessful)
     
     
         
