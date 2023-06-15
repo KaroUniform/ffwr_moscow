@@ -69,14 +69,3 @@ class UsersToChats(BaseModel):
         )
         primary_key = CompositeKey('chat', 'user')
 
-class UsersToQuotes(BaseModel):
-    quote = ForeignKeyField(column_name='quote_id', constraints=[SQL("DEFAULT nextval('users_to_quotes_quote_id_seq'::regclass)")], field='quote_id', model=Quotes)
-    user = ForeignKeyField(column_name='user_id', field='user_id', model=Users)
-
-    class Meta:
-        table_name = 'users_to_quotes'
-        indexes = (
-            (('user', 'quote'), True),
-        )
-        primary_key = CompositeKey('quote', 'user')
-
