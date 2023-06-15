@@ -32,6 +32,6 @@ async def allow_chat(message: Message, bot : Bot):
             member_limit=1
         )
     except TelegramBadRequest:
-        await message.reply(f"🙁Не получилось сделать ссылку, нет прав в целевом чате")
+        await message.reply(f"🙁Не получилось достать ссылку, нет прав в целевом чате")
         return
     await message.reply(f"🚪Ваша {html.link('ссылка', link.invite_link)} на чат {html.bold(html.quote(chat.chat_title))}", protect_content=True, parse_mode="HTML")
