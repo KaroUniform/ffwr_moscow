@@ -4,7 +4,7 @@ from logging.handlers import TimedRotatingFileHandler
 import os
 from aiogram import Bot, Dispatcher
 from bot_config import config
-from handlers import echo, chat_actions, base, ban, mute, voice, warn, jericho, antibot, broadcast, linkers
+from handlers import echo, chat_actions, base, ban, mute, voice, warn, jericho, antibot, broadcast, linkers, quotes
 from middleware.whitelist import WhitelistMessageMiddleware
 
 
@@ -42,6 +42,7 @@ async def main() -> None:
         broadcast.router,
         echo.router,
         linkers.router,
+        quotes.router,
         base.router, # Make sure it's the last handler
     )
     
@@ -54,8 +55,12 @@ async def main() -> None:
         + jericho.commands 
         + broadcast.commands
         + linkers.commands
+        + quotes.commands
     )
-    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    await dp.start_polling(
+        bot, 
+        allowed_updates=dp.resolve_used_update_types(),
+    )
 
 if __name__ == "__main__":
     asyncio.run(main())
