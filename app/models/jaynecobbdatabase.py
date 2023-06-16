@@ -1,3 +1,5 @@
+#TODO модель не имеет ограничений и описывает лишь базовую структуру. БД в postgresql настроена как надо. Привести в порядок модель peewee
+
 from peewee import *
 
 database = PostgresqlDatabase('jaynecobbdatabase', autocommit=True, **{'host': '192.168.0.9', 'port': 5432, 'user': 'cobb', 'password': 'cobbpass'})
@@ -51,6 +53,7 @@ class Quotes(BaseModel):
     submitter = ForeignKeyField(column_name='submitter_id', field='user_id', model=Users)
     submitter_name = CharField()
     text = CharField()
+    author_username = CharField()
 
     class Meta:
         table_name = 'quotes'
