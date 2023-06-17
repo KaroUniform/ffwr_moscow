@@ -6,6 +6,7 @@ from models.jaynecobbdatabase import Quotes
 from bot_utils import deepgetattr, del_command
 import random
 from aiogram import html
+from peewee import fn
 
 router = Router()
 router.message.filter(F.text)
@@ -17,16 +18,47 @@ commands = [
     BotCommand(command='/addmultiline', description="[text] Произвольный текст в цитату"),
 ]
 
+spells = [
+    "ахалай-махалай",
+    "ляськи-масяськи",
+    "сим-салабим",
+    "пикапу-трикапу",
+    "лорики-ёрики",
+    "снип-снап-снурре",
+    "снурре-базилюрре",
+    "бофара-чуфара",
+    "абра-кадабра",
+    "трах-тибидох",
+    "колдуй бабка, колдуй дед",
+    "флюггегехаймен",
+    "скорики-морики",
+    "крибле-крабле-бумс",
+    "крекс-пекс-фекс",
+    "керальтус-нивус",
+    "бип-боп",
+    "бип-буп"
+]
 
+@router.message(Command('horoscope'))
+async def horoscope(message: Message):
+    global spells
+    q = Quotes.select(Quotes.text).order_by(fn.Random()).limit(1)
+    italic = html.italic(f"{random.choice(spells).capitalize()}, {random.choice(spells)}! Вот что судьба тебе готовит!")
+    await message.reply(
+        f"{italic}\n\n {html.code(html.quote(q.get().text))}", 
+        parse_mode='HTML'
+    )
+    
 @router.message(Command('quote'))
-async def quote(message: Message, bot: Bot):
+async def quote(message: Message):
     
     q_number = del_command(message.text)
     if q_number.isdigit(): 
         q = Quotes.get_or_none(quote_id=int(q_number))
         if q: 
+            author = f"{html.bold(q.author_username)}:\n " if q.author_username != "multiline" else ""
             by = html.italic("#"+str(q.quote_id)+ " submitted by "+ q.submitter_name + " at " + q.create_time.strftime('%Y-%m-%d'))
-            await message.reply(f"{html.bold(q.author_username)}:\n {html.code(html.quote(q.text))}\n\n {by}", parse_mode='HTML')
+            await message.reply(f"{author}{html.code(html.quote(q.text))}\n\n {by}", parse_mode='HTML')
             return
             
     q_list = [quote for quote in Quotes.select().execute()]
@@ -35,6 +67,7 @@ async def quote(message: Message, bot: Bot):
         return
         
     q = random.choice(q_list)
+    author = f"{html.bold(q.author_username)}:\n " if q.author_username != "multiline" else ""
     by = html.italic(
         "#"+str(q.quote_id)
         +" submitted by "
@@ -42,13 +75,14 @@ async def quote(message: Message, bot: Bot):
         +" at "
         +q.create_time.strftime('%Y-%m-%d')
     )
+    
     await message.reply(
-        f"{html.bold(q.author_username)}:\n {html.code(html.quote(q.text))}\n\n {by}", parse_mode='HTML'
+        f"{author}{html.code(html.quote(q.text))}\n\n {by}", parse_mode='HTML'
     )
     
 
 @router.message(Command('allquotes'))
-async def allquotes(message: Message, bot: Bot):
+async def allquotes(message: Message):
     q_list = [str(q.quote_id) for q in Quotes.select(Quotes.quote_id).execute()]
     q_str = ", ".join([str(q.quote_id) for q in Quotes.select(Quotes.quote_id).execute()])
     await message.reply(f"💬Всего цитат: {len(q_list)}\nСписок доступных номеров цитат: {q_str}")
@@ -71,23 +105,36 @@ async def aquote(message: Message, bot: Bot):
     )
     await message.reply(f'Цитата была сохранена под номером {quote.quote_id}')
 
-@router.message((F.reply_to_message), Command('rmquote'), RoleFilter('moderator'))    
-@router.message((F.reply_to_message), Command('rmquote'), RoleFilter('admin'))
-@router.message((F.reply_to_message), Command('rmquote'), RoleFilter('owner'))
-async def rmquote(message: Message, bot: Bot):
+@router.message(Command('rmquote'), RoleFilter('moderator'))    
+@router.message(Command('rmquote'), RoleFilter('admin'))
+@router.message(Command('rmquote'), RoleFilter('owner'))
+async def rmquote(message: Message,):
     number = del_command(message.text)
     if not number.isdigit(): 
-        await message.reply(f'Для удаления цитаты необходимо указать действительный номер')
+        await message.reply(f'#️⃣Для удаления цитаты необходимо указать действительный номер')
         return
     number = int(number)
-    if not Quotes.get_or_none(quote_id=number):
-        await message.reply(f'Такой цитаты не существует')
+    q =  Quotes.get_or_none(quote_id=number)
+    if not q:
+        await message.reply(f'❓Такой цитаты не существует')
+        return
+    q.delete_instance()
+    await message.reply(f'Цитата {number} удалена')
+
+
+@router.message(Command('addmultiline'), RoleFilter('owner'))
+async def addmultiline(message: Message):
+    multiline_q = del_command(message.text)
+    if(not multiline_q):
+        await message.reply(f'Вставьте любое сообщение после команды для сохранения в цитаты')
         return
 
-    
-        
-
-@router.message(Command('addmultiline'))
-async def addmultiline(message: Message, bot: Bot):
-    pass
+    new_q = Quotes.create(
+        chat=message.chat.id,
+        submitter=message.from_user.id,
+        submitter_name=message.from_user.username,
+        text=multiline_q.strip("\n"),
+        author_username="multiline"
+    )
+    await message.reply(f'Цитата сохранена под номером '+ str(new_q.quote_id))
     
