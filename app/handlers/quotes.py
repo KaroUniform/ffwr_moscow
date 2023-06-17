@@ -16,6 +16,7 @@ commands = [
     BotCommand(command='/aquote', description="[reply_to_message] Добавить цитату"),
     BotCommand(command='/rmquote', description="[#] Удалить цитату номер #"),
     BotCommand(command='/addmultiline', description="[text] Произвольный текст в цитату"),
+    BotCommand(command='/horoscope', description="Гадание по цитатам"),
 ]
 
 spells = [
